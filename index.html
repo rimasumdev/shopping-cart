@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Shopping Cart</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+</head>
+
+<body>
+  <section id="section">
+    <div class="container">
+      <div class="cart">
+        <div class="col-md-12 col-lg-10 mx-auto">
+          <div id="cart1" class="cart-item">
+            <div class="row">
+              <div class="col-md-7 center-item">
+                <img src="images/product-1.png" alt="" />
+                <h5>iPhone 11 128GB Black</h5>
+              </div>
+
+              <div class="col-md-5 center-item">
+                <div class="input-group number-spinner">
+                  <button id="decreaseUnit1" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                  <input id="txtPhoneUnit1" type="text" class="form-control text-center" value="1" />
+                  <button id="increaseUnit1" class="btn btn-default"><i class="fas fa-plus"></i></button>
+                </div>
+                <h5>$ <span id="unitPrice1">1219</span></h5>
+                <img id="delete1" src="images/remove.png" alt="" class="remove-item" />
+              </div>
+            </div>
+          </div>
+
+          <div id="cart2" class="cart-item">
+            <div class="row">
+              <div class="col-md-7 center-item mx-auto">
+                <img src="images/product-2.png" alt="" />
+                <h5>iPhone 11 Silicone Case - Black</h5>
+              </div>
+              <div class="col-md-5 center-item">
+                <div class="input-group number-spinner">
+                  <button id="decreaseUnit2" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                  <input id="txtPhoneUnit2" type="text" class="form-control text-center" value="1" />
+                  <button id="increaseUnit2" class="btn btn-default"><i class="fas fa-plus"></i></button>
+                </div>
+                <h5>$ <span id="unitPrice2">59</span></h5>
+                <img id="delete2" src="images/remove.png" alt="" class="remove-item" />
+              </div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="row">
+              <div class="col-md-8">
+                <h5>Subtotal:</h5>
+                <h5>Tax (%):</h5>
+                <h5>Total:</h5>
+              </div>
+
+              <div class="col-md-4 status">
+                <h5>$ <span id="subAmount">1278</span></h5>
+                <h5>$ <span id="taxAmount">15</span></h5>
+                <h5>$ <span id="grandAmount">1278</span></h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 pt-4 pb-4">
+            <button id="btnCheck" type="button" class="btn btn-success check-out">
+              Check Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  <div class="container">
+    <div id="check" class="checkout">
+      <h5>You Have Successfully Checked Out.</h5>
+    </div>
+  </div>
+  <script>
+    // Unit and Price Update Function
+    function updateUnit(id, unit, pricePerUnit, netPrice, subTotalPrice, GrandTotalPrice) {
+      const txtUnit = document.getElementById(id).value;
+      let txtUnitToNumber = parseFloat(txtUnit);
+      txtUnitToNumber = txtUnitToNumber + unit;
+      document.getElementById(id).value = txtUnitToNumber;
+
+      const unitPrice = document.getElementById(netPrice).innerText;
+      let unitPriceNumber = parseFloat(unitPrice);
+      unitPriceNumber = unitPriceNumber + pricePerUnit;
+      document.getElementById(netPrice).innerText = unitPriceNumber;
+      return txtUnitToNumber;
+    }
+    // SubTotalGrandTotal Function
+    function subTotalGrandTotal(netPrice1, netPrice2, sub, tax, grand) {
+      const netP1 = document.getElementById(netPrice1).innerText;
+      let netP1Number = parseFloat(netP1);
+      const netP2 = document.getElementById(netPrice2).innerText;
+      let netP2Number = parseFloat(netP2);
+      let subTotal = netP1Number + netP2Number;
+      document.getElementById(sub).innerText = subTotal;
+
+      const taxAmount = document.getElementById(tax).innerText;
+      let taxAmountNumber = parseFloat(taxAmount);
+      let totalTax = subTotal * taxAmountNumber / 100;
+      // console.log(totalTax);
+      let grandTotal = subTotal + totalTax;
+      document.getElementById(grand).innerText = grandTotal;
+      return subTotal;
+    }
+    // Increase/Decrease Button Function
+    function increaseDecreaseBtnClick(id, txtPhoneUnit, defaultUnit, defaultPrice, unitPrice, unitPrice2, subPrice, tax, grand) {
+      const btnClick = document.getElementById(id);
+      btnClick.addEventListener("click", function () {
+        const txtUnit = updateUnit(txtPhoneUnit, defaultUnit, defaultPrice, unitPrice);
+        const subT = subTotalGrandTotal(unitPrice, unitPrice2, subPrice, tax, grand);
+        return txtUnit;
+        return subT;
+      });
+    }
+    // Delete Button Function
+    function deleteBtn(btn, unit, cartid, emptyMsg) {
+      const btnDelete = document.getElementById(btn);
+      btnDelete.addEventListener("click", function () {
+        const price = document.getElementById(unit).innerText;
+        let priceNumber = parseFloat(price);
+        const amountSub = document.getElementById("subAmount").innerText;
+        let amountSubNumber = parseFloat(amountSub);
+        let subTotal = amountSubNumber - priceNumber;
+        document.getElementById("subAmount").innerText = subTotal;
+
+        const taxAmount = document.getElementById("taxAmount").innerText;
+        let taxAmountNumber = parseFloat(taxAmount);
+        let totalTax = subTotal * taxAmountNumber / 100;
+        let grandTotal = subTotal + totalTax;
+        document.getElementById("grandAmount").innerText = grandTotal;
+        document.getElementById(cartid).style.display = "none";
+      });
+    }
+    // Increase/Decrease Button Event Handler
+    increaseDecreaseBtnClick("increaseUnit1", "txtPhoneUnit1", 1, 1219, "unitPrice1", "unitPrice2", "subAmount", "taxAmount", "grandAmount");
+    increaseDecreaseBtnClick("increaseUnit2", "txtPhoneUnit2", 1, 59, "unitPrice2", "unitPrice1", "subAmount", "taxAmount", "grandAmount");
+    increaseDecreaseBtnClick("decreaseUnit1", "txtPhoneUnit1", -1, -1219, "unitPrice1", "unitPrice2", "subAmount", "taxAmount", "grandAmount");
+    increaseDecreaseBtnClick("decreaseUnit2", "txtPhoneUnit2", -1, -59, "unitPrice2", "unitPrice1", "subAmount", "taxAmount", "grandAmount");
+
+    deleteBtn("delete1", "unitPrice1", "cart1");
+    deleteBtn("delete2", "unitPrice2", "cart2");
+
+    const btnCheck = document.getElementById("btnCheck");
+    btnCheck.addEventListener("click", function () {
+      document.getElementById("section").style.display = "none";
+      document.getElementById("check").style.display = "block";
+
+    });
+
+
+  </script>
+</body>
+
+</html>
